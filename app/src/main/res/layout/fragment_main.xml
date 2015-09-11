@@ -10,26 +10,28 @@
         android:orientation="vertical" android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:id="@+id/layout1"
         >
+
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TEST"
-            android:src="@mipmap/Red"/>
+            android:src="@drawable/red"
+            android:id="@+id/card1"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/Red"
-            android:text="TEST"/>
+            android:src="@drawable/red"
+            android:id="@+id/card2"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/Red"
-            android:text="TEST"/>
+            android:src="@drawable/red"
+            android:id="@+id/card3"/>
 
 
     </LinearLayout>
@@ -38,27 +40,27 @@
         android:orientation="vertical" android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:id="@+id/layout2"
         >
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TEST"
-            android:src="@mipmap/Red"/>
+            android:src="@drawable/red"
+            android:id="@+id/card4"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/Red"
-            android:text="TEST"/>
+            android:src="@drawable/red"
+            android:id="@+id/card5"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@mipmap/Red"
-            android:text="TEST"/>
-
+            android:src="@drawable/red"
+            android:id="@+id/card6"/>
 
     </LinearLayout>
 
