@@ -1,66 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="100dp"
+    android:orientation="horizontal"
+
 
     >
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical" android:layout_width="wrap_content"
+        android:id="@+id/layout1"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:id="@+id/layout1"
-        >
+        android:orientation="vertical">
 
 
-        <ImageView
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/red"
-            android:id="@+id/card1"/>
-        <ImageView
+            >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
+
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/red"
-            android:id="@+id/card2"/>
-        <ImageView
+            >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
+
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/red"
-            android:id="@+id/card3"/>
+            >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
 
 
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical" android:layout_width="wrap_content"
+        android:id="@+id/layout2"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:id="@+id/layout2"
-        >
+        android:orientation="vertical">
 
-        <ImageView
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/red"
-            android:id="@+id/card4"/>
-        <ImageView
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
+
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/red"
-            android:id="@+id/card5"/>
-        <ImageView
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
+
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/red"
-            android:id="@+id/card6"/>
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
 
     </LinearLayout>
 

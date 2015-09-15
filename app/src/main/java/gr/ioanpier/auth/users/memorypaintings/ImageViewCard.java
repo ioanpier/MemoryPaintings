@@ -3,52 +3,43 @@ package gr.ioanpier.auth.users.memorypaintings;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import android.widget.ViewFlipper;
 
 /**
  * Created by Ioannis on 14/9/2015.
  */
-public class ImageViewCard extends ImageView {
+public class ImageViewCard extends ViewFlipper {
 
     private Drawable front;
+    private final Context context;
     private Drawable back;
     private boolean frontIsShowing = true;
 
     public ImageViewCard(Context context) {
         super(context);
+        this.context = context;
     }
 
     public ImageViewCard(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
     }
 
-    public ImageViewCard(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    public void setImageDrawable(Drawable drawable){
-        front = drawable;
-        super.setImageDrawable(front);
-    }
-
-    public void setImageDrawableFront(Drawable drawable){
-        front = drawable;
-        frontIsShowing=true;
-        super.setImageDrawable(front);
-    }
-
-    public void setImageDrawableBack(Drawable drawable){
-        back = drawable;
-    }
 
     public void flipCard(){
-        if (frontIsShowing){
-            super.setImageDrawable(back);
-            frontIsShowing=false;
+        if (getDisplayedChild() == 0){
+            setInAnimation(context, R.anim.in_from_left);
+            setOutAnimation(context, R.anim.out_to_right);
+            showNext();
         }else{
-            super.setImageDrawable(front);
-            frontIsShowing=true;
+           setInAnimation(context, R.anim.in_from_right);
+           setOutAnimation(context, R.anim.out_to_left);
+           showPrevious();
         }
+    }
+
+    public boolean isFrontShowing(){
+        return frontIsShowing;
     }
 
 
