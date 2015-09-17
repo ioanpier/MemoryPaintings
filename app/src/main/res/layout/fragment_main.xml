@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-
+    android:id="@+id/parent"
 
     >
 
@@ -12,14 +12,15 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
 
         <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
             android:id="@+id/card1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -32,9 +33,9 @@
 
         <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
             android:id="@+id/card2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -47,9 +48,9 @@
 
         <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
             android:id="@+id/card3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -68,12 +69,13 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center">
 
         <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
             android:id="@+id/card4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_weight="1">
 
             <ImageView
@@ -91,8 +93,8 @@
 
         <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
             android:id="@+id/card5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_weight="1">
 
             <ImageView
@@ -106,8 +108,8 @@
 
         <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
             android:id="@+id/card6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_weight="1">
 
             <ImageView
@@ -120,5 +122,120 @@
         </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
 
     </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout4"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card10"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
+
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card11"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
+
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card12"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout3"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card7"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
+
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card8"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
+
+        <gr.ioanpier.auth.users.memorypaintings.ImageViewCard
+            android:id="@+id/card9"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </gr.ioanpier.auth.users.memorypaintings.ImageViewCard>
+
+
+    </LinearLayout>
+
 
 </LinearLayout>

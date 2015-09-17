@@ -1,9 +1,11 @@
 package gr.ioanpier.auth.users.memorypaintings;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
 public class ImageDetails extends ActionBarActivity {
@@ -12,6 +14,13 @@ public class ImageDetails extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_details);
+        int drawableID;
+        drawableID = getIntent().getIntExtra("IMAGE_ID", R.drawable.black);
+        String drawableDesc = getIntent().getStringExtra("IMAGE_DESC");
+
+        ((ImageView)(findViewById(R.id.image))).setImageDrawable(getResources().getDrawable(drawableID));
+        ((TextView)(findViewById(R.id.text))).setText(drawableDesc);
+
     }
 
     @Override

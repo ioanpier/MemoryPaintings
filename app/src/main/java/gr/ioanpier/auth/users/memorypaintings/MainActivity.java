@@ -1,17 +1,24 @@
 package gr.ioanpier.auth.users.memorypaintings;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements  MainActivityFragment.Callback{
+
+    private Button nextLevelButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        nextLevelButton = (Button)findViewById(R.id.nextLevelButton);
     }
 
 
@@ -35,5 +42,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void roundEnded() {
+        nextLevelButton.setVisibility(View.VISIBLE);
+        final int level = ((MainActivityFragment)getSupportFragmentManager().getFragments().get(0)).getLevel();
+        final String LEVEL_TAG = ((MainActivityFragment)getSupportFragmentManager().getFragments().get(0)).getLevelTag();
+        final Context context = this;
+        nextLevelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra(LEVEL_TAG, level + 1);
+                startActivity(intent);
+            }
+        });
     }
 }
