@@ -1,22 +1,32 @@
 package gr.ioanpier.auth.users.memorypaintings;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Random;
 
 
 /**
  * A placeholder fragment containing the screen and the logic of the game.
+ *
  * @author Ioannis Pierros (ioanpier@gmail.com)
  */
 public class MainActivityFragment extends Fragment {
@@ -25,15 +35,17 @@ public class MainActivityFragment extends Fragment {
     private final static String LEVEL_TAG = "LEVEL_TAG";
 
     //These variables are used for the dynamic creation of the level. They are chosen so their number is odd and the screen is filled evenly.
-    private int layoutsPerLevel[] = {2, 2,  3, 4,4,4};
-    private int cardsPerLevel[] = {4, 6,  12, 16,20,24};
+    private int layoutsPerLevel[] = {2, 2, 3, 4, 4, 4};
+    private int cardsPerLevel[] = {4, 6, 12, 16, 20, 24};
     private int level;
 
-
+    GameHandler handler;
     /**
      * Holds a key information for the state of the game. Refer to onCardFlipped for its usage.
      */
     private boolean cardFlipped = false;
+
+    Object gameLogicLock = new Object();
 
     /**
      * The index of the card currently showing (used in conjuction with cardFlipped variable)
@@ -68,7 +80,7 @@ public class MainActivityFragment extends Fragment {
     /**
      * The Drawable[s] used for the front of ImageViewCard during the round.
      */
-    private final int[] drawables =   {R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d, R.drawable.e, R.drawable.f,
+    private final int[] drawables = {R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d, R.drawable.e, R.drawable.f,
             R.drawable.red_big, R.drawable.blue_big, R.drawable.green_big, R.drawable.yellow_big, R.drawable.purple_big,
             R.drawable.orange_big, R.drawable.a1, R.drawable.a2, R.drawable.a3, R.drawable.a4, R.drawable.a5, R.drawable.a6,
             R.drawable.a7, R.drawable.a8, R.drawable.sidejob, R.drawable.monk, R.drawable.sunset, R.drawable.timetogo};
@@ -76,7 +88,7 @@ public class MainActivityFragment extends Fragment {
     /**
      * The Drawable[s] used for viewing the image fullscreen.
      */
-    private final int[] drawablesBig ={R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d, R.drawable.e, R.drawable.f,
+    private final int[] drawablesBig = {R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d, R.drawable.e, R.drawable.f,
             R.drawable.red_big, R.drawable.blue_big, R.drawable.green_big, R.drawable.yellow_big, R.drawable.purple_big,
             R.drawable.orange_big, R.drawable.a1, R.drawable.a2, R.drawable.a3, R.drawable.a4, R.drawable.a5, R.drawable.a6,
             R.drawable.a7, R.drawable.a8, R.drawable.sidejob, R.drawable.monk, R.drawable.sunset, R.drawable.timetogo};
@@ -94,7 +106,7 @@ public class MainActivityFragment extends Fragment {
     /**
      * Callback interface.
      */
-    public interface Callback{
+    public interface Callback {
         /**
          * Fired when the round has ended.
          */
@@ -102,14 +114,35 @@ public class MainActivityFragment extends Fragment {
     }
 
     /**
+     * Getter method for the level variable
+     *
+     * @return the current level
+     */
+    public int getLevel() {
+        return level;
+    }
+
+    /**
+     * Getter method for the LEVEL_TAGE variable
+     *
+     * @return the LEVEL_TAG String
+     */
+    public String getLevelTag() {
+        return LEVEL_TAG;
+    }
+
+    /**
      * Default constructor
      */
-    public MainActivityFragment() {}
+    public MainActivityFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main2, container, false);
+        handler = new GameHandler();
+
 
         //Calculate the level and the number of cards.
         level = getActivity().getIntent().getIntExtra(LEVEL_TAG, 0);
@@ -226,86 +259,198 @@ public class MainActivityFragment extends Fragment {
 
         }
 
+        Drawable dr;
+        if (isExternalStorageReadable()){
+            File[] files = getImageFilesFromDirectory(getActivity(), "Thumbnails");
+            getDrawables(files, null, null);
+            //((SquareImageView) cards[0].getChildAt(0)).setImageDrawable(dr);
+        } else
+            Log.v(LOG, "External storage wasn't readable");
+
+
         return rootView;
     }
 
     /**
      * Called when a card is clicked, while the round hasn't ended. Contains the main game logic.
+     *
      * @param cardID The index of the card that was clicked.
      */
     private void onCardFlipped(final int cardID) {
-        if (!found[cardID]) {
-            cards[cardID].flipCard();
-
-            if (cards[cardID].getDisplayedChild() == 0) {
-                //Log.v(LOG, "The card is already showing. Flip it back.");
-                cardFlipped = false;
-
-            } else if (!cardFlipped) {
-                //Log.v(LOG, "There was no other card flipped, so flip this one and save its index.");
-                card = cardID;
-                cardFlipped = true;
-            } else if (pairs[cardID] == card) {
-                //Log.v(LOG, "A pair has been found!");
-                cardFlipped = false;
-                found[cardID] = true;
-                found[pairs[cardID]] = true;
-                numberOfCardsFound += 2;
-
-                if (numberOfCardsFound == numberOfCards) {
-                    ((Callback)getActivity()).roundEnded();
-                }
-
-            } else {
-                //Log.v(LOG, "This isn't a pair");
-                //Wait a little so the player can see the card, before flipping both face down again.
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        try {
-                            Thread.sleep(250);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-                    @Override
-                    public void onPostExecute(Void result) {
-                        cards[card].flipCard();
-                        cards[cardID].flipCard();
-                    }
-                }.execute();
-
-                cardFlipped = false;
-            }
-        }
+        Message msg = new Message();
+        msg.what = onCardFlipped;
+        msg.arg1 = cardID;
+        handler.sendMessage(msg);
     }//onCardFlipped
 
 
     /**
      * Called when a card is clicked, after tha round has ended. Open the image on fullscreen, providing the respective description.
+     *
      * @param cardID The index of the card that was clicked.
      */
     private void onCardClicked(final int cardID) {
-        Intent intent = new Intent(getActivity(), ImageDetails.class);
-        intent.putExtra("IMAGE_ID", drawablesBig[cardDrawablePairs[cardID]]);
-        if (drawablesDesc[cardDrawablePairs[cardID]]==null)
-            intent.putExtra("IMAGE_DESC", getString(R.string.loremipsum));
-        else
-            intent.putExtra("IMAGE_DESC", drawablesDesc[cardDrawablePairs[cardID]]);
-        startActivity(intent);
+        Message msg = new Message();
+        msg.what = onCardClicked;
+        msg.arg1 = cardID;
+        handler.sendMessage(msg);
     }//onCardClicked
 
-    /**
-     * Getter method for the level variable
-     * @return the current level
-     */
-    public int getLevel(){return level;}
+    private class GameHandler extends Handler {
 
-    /**
-     * Getter method for the LEVEL_TAGE variable
-     * @return the LEVEL_TAG String
-     */
-    public String getLevelTag(){return LEVEL_TAG;}
+        public GameHandler() {
+            super();
+        }
+
+        @Override
+        public void handleMessage(Message message) {
+
+            synchronized (gameLogicLock) {
+                final int cardID = message.arg1;
+                switch (message.what) {
+                    case onCardFlipped:
+                        if (!found[cardID]) {
+                            cards[cardID].flipCard();
+
+                            if (cards[cardID].getDisplayedChild() == 0) {
+                                //Log.v(LOG, "The card is already showing. Flip it back.");
+                                cardFlipped = false;
+
+                            } else if (!cardFlipped) {
+                                //Log.v(LOG, "There was no other card flipped, so flip this one and save its index.");
+                                card = cardID;
+                                cardFlipped = true;
+                            } else if (pairs[cardID] == card) {
+                                //Log.v(LOG, "A pair has been found!");
+                                cardFlipped = false;
+                                found[cardID] = true;
+                                found[pairs[cardID]] = true;
+                                numberOfCardsFound += 2;
+
+                                if (numberOfCardsFound == numberOfCards) {
+                                    ((MainActivityFragment.Callback) getActivity()).roundEnded();
+                                }
+
+                            } else {
+                                //Log.v(LOG, "This isn't a pair");
+                                //Wait a little so the player can see the card, before flipping both face down again.
+                                new AsyncTask<Void, Void, Void>() {
+                                    @Override
+                                    protected Void doInBackground(Void... voids) {
+                                        try {
+                                            Thread.sleep(250);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        return null;
+                                    }
+
+                                    @Override
+                                    public void onPostExecute(Void result) {
+                                        cards[card].flipCard();
+                                        cards[cardID].flipCard();
+                                    }
+                                }.execute();
+
+                                cardFlipped = false;
+                            }
+                        }
+                        break;
+                    case onCardClicked:
+                        Intent intent = new Intent(getActivity(), ImageDetails.class);
+                        intent.putExtra("IMAGE_ID", drawablesBig[cardDrawablePairs[cardID]]);
+                        if (drawablesDesc[cardDrawablePairs[cardID]] == null)
+                            intent.putExtra("IMAGE_DESC", getString(R.string.loremipsum));
+                        else
+                            intent.putExtra("IMAGE_DESC", drawablesDesc[cardDrawablePairs[cardID]]);
+                        startActivity(intent);
+                        break;
+                }
+            }
+
+
+        }
+    }
+
+    private final static int onCardFlipped = 0;
+    private final static int onCardClicked = 1;
+
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public File[] getImageFilesFromDirectory(Context context, String albumName) {
+        // Get the directory for the app's private pictures directory.
+        File directory = new File(context.getExternalFilesDir(
+                Environment.DIRECTORY_PICTURES), albumName);
+        if (!directory.mkdirs() && !directory.isDirectory()) {
+            Log.e(LOG, "Directory not created");
+        }
+
+
+        File[] files = directory.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File file, String s) {
+                return s.contains(".jpg") || s.contains(".png");
+            }
+        });
+        return files;
+    }
+
+    public void getDrawables(File[] thumbnails, File[] images, File[] descriptions){
+
+        HashMap<String, String> storedThumbnails = new HashMap<>();
+        for (File thumbnail : thumbnails) {
+            storedThumbnails.put(thumbnail.getName(), thumbnail.getAbsolutePath());
+        }
+
+        HashMap<String, String> storedImages = new HashMap<>();
+        for (File image : images) {
+            storedImages.put(image.getName(), image.getAbsolutePath());
+        }
+
+        HashMap<String, String> storedDescriptions = new HashMap<>();
+        for (File description : descriptions) {
+            storedDescriptions.put(description.getName(), description.getAbsolutePath());
+        }
+
+        drawableThumbnail = new Drawable[storedThumbnails.size()];
+        drawableImage = new Drawable[storedThumbnails.size()];
+
+        int i=0;
+        for (String name : storedThumbnails.keySet()){
+            drawableThumbnail[i] = Drawable.createFromPath(storedThumbnails.get(name));
+
+            if (storedImages.containsKey(name))
+                drawableImage[i] = Drawable.createFromPath(storedImages.get(name));
+            else
+                drawableImage[i] = Drawable.createFromPath(storedThumbnails.get(name));
+
+            if (storedDescriptions.containsKey(name))
+                drawablesDesc[i] = storedDescriptions.get(name);
+            else
+                drawableImage[i] = null;
+
+            i++;
+
+        }
+
+
+
+        for (File file : thumbnails)
+            System.out.println(file.getName());
+
+
+    }
+
+    Drawable[] drawableThumbnail;
+    Drawable[] drawableImage;
+
 
 }
