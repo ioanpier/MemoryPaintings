@@ -13,12 +13,14 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity implements  MainActivityFragment.Callback{
 
     private Button nextLevelButton;
+    private Button replayLevelButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         nextLevelButton = (Button)findViewById(R.id.nextLevelButton);
+        replayLevelButton = (Button)findViewById(R.id.replayLevelButton);
     }
 
 
@@ -47,16 +49,46 @@ public class MainActivity extends AppCompatActivity implements  MainActivityFrag
     @Override
     public void roundEnded() {
         nextLevelButton.setVisibility(View.VISIBLE);
+        replayLevelButton.setVisibility(View.VISIBLE);
+
         final int level = ((MainActivityFragment)getSupportFragmentManager().getFragments().get(0)).getLevel();
         final String LEVEL_TAG = ((MainActivityFragment)getSupportFragmentManager().getFragments().get(0)).getLevelTag();
         final Context context = this;
+
         nextLevelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, MainActivity.class);
                 intent.putExtra(LEVEL_TAG, level + 1);
                 startActivity(intent);
+                finish();
             }
         });
+
+        replayLevelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra(LEVEL_TAG, level);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        final int level = ((MainActivityFragment)getSupportFragmentManager().getFragments().get(0)).getLevel();
+        final String LEVEL_TAG = ((MainActivityFragment)getSupportFragmentManager().getFragments().get(0)).getLevelTag();
+        if (level!=0)
+        {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(LEVEL_TAG, 0);
+            startActivity(intent);
+            finish();
+        }
+        else{
+            super.onBackPressed();
+        }
     }
 }

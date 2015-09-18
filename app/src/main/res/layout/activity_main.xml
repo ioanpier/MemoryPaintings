@@ -10,14 +10,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <Button
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next Level!"
         android:layout_centerInParent="true"
-        android:id="@+id/nextLevelButton"
-        android:visibility="gone"
-        />
+        android:orientation="horizontal"
+        >
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Replay Level!"
+            android:id="@+id/replayLevelButton"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next Level!"
+            android:id="@+id/nextLevelButton"
+            android:visibility="gone"
+
+            />
+
+    </LinearLayout>
+
+
 
 
 </RelativeLayout>
