@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 /**
- * Created by Ioannis on 17/9/2015.
+ * An extension of ImageView that ensures the image will be square by overiding the onMeasure method.
  */
 public class SquareImageView extends ImageView {
     public SquareImageView(Context context) {
@@ -20,6 +20,7 @@ public class SquareImageView extends ImageView {
         super(context, attrs, defStyle);
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);

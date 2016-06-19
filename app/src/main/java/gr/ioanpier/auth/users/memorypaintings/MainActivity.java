@@ -1,6 +1,8 @@
 package gr.ioanpier.auth.users.memorypaintings;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,20 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (((MainActivityFragment) getSupportFragmentManager().getFragments().get(0)).getLevel() == 0 ){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle(R.string.instructions)
+                    .setNegativeButton(getString(R.string.dismiss), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    })
+                    .setMessage(getString(R.string.instructions_message));
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
 
     @Override

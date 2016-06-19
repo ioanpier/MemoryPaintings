@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="replayLevel">Powtórka Poziom!</string>
+    <string name="nextlevel">Następny Poziom!</string>
+    <string name="WelcomeScreenContentDescription">Galeria Labirynt w Logo</string>
+    <string name="GalleriaLabirynt">Galeria Labirynt</string>
+    <string name="app_name">Malarstwo Pamięci</string>
+    <string name="loading_bar_message">Poczekaj zdjęcia są ładuje…</string>
+    <string name="dismiss">Odwołać</string>
+    <string name="instructions">Instrukcje</string><string name="instructions_message">Każdy obraz ma identyczną parę. Musisz go znaleźć!
+Na koniec rundy, można kliknąć obrazek by zobaczyć go w pełnym ekranie, a także kilka dodatkowych informacji na ten temat.</string>
+</resources>

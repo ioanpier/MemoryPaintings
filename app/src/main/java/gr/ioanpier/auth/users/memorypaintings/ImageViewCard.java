@@ -1,19 +1,16 @@
 package gr.ioanpier.auth.users.memorypaintings;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ViewFlipper;
 
 /**
- * Created by Ioannis on 14/9/2015.
+ * A class that extends ViewFlipper to include a method for flipping with a standard animation.
+ * @author Ioannis Pierros (ioanpier@gmail.com)
  */
 public class ImageViewCard extends ViewFlipper {
 
-    private Drawable front;
     private final Context context;
-    private Drawable back;
-    private boolean frontIsShowing = true;
 
     public ImageViewCard(Context context) {
         super(context);
@@ -37,10 +34,5 @@ public class ImageViewCard extends ViewFlipper {
            showPrevious();
         }
     }
-
-    public boolean isFrontShowing(){
-        return frontIsShowing;
-    }
-
 
 }
