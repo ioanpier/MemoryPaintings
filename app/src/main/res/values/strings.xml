@@ -13,4 +13,19 @@
     <string name="instructions">Instructions</string>
     <string name="instructions_message">Every image has an identical pair. You have to find it!
 At the end of the round, you can click an image to view it in fullscreen as well as some extra information about it.</string>
+
+    <string name="a1">cat</string>
+    <string name="a2">forest</string>
+    <string name="a3">wooden bridge</string>
+    <string name="a4">sky scrapers</string>
+    <string name="a5">red sunset</string>
+    <string name="a6">dog</string>
+    <string name="a7">exploding sun</string>
+    <string name="a8">frozen forest</string>
+    <string name="a9">girl</string>
+    <string name="a10">heart tree</string>
+    <string name="a11">piano</string>
+    <string name="a12">rabbit</string>
+    <string name="a13">White Tower of Thessaloniki</string>
+
 </resources>

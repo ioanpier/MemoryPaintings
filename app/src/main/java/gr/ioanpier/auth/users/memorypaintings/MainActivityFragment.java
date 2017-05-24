@@ -1,5 +1,19 @@
 package gr.ioanpier.auth.users.memorypaintings;
+/*
+Copyright {2016} {Ioannis Pierros (ioanpier@gmail.com)}
 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -233,22 +247,28 @@ public class MainActivityFragment extends Fragment {
         numberOfBitmapWorkerTasks = numberOfCards / 2;
         instantiateLoadingBar();
 
-        if (isExternalStorageReadable()) {
-            File[] files1 = getFilesFromDirectory(getActivity(), "Thumbnails", ".jpg", ".png");
-            File[] files2 = getFilesFromDirectory(getActivity(), "Images", ".jpg", ".png");
-
-            String descriptionsFolder = "Descriptions";
-            Locale locale = getActivity().getResources().getConfiguration().locale;
-            if (locale.getDisplayLanguage().equals(Locale.ENGLISH.getDisplayLanguage()))
-                descriptionsFolder = descriptionsFolder.concat("_en");
-            else
-                descriptionsFolder = descriptionsFolder.concat("_pl");
-            File[] files3 = getFilesFromDirectory(getActivity(), descriptionsFolder, ".txt");
-
-            getDrawables(files1, files2, files3);
-        } else {
+        if (!isExternalStorageReadable()) {
             Log.e(LOG, "External storage wasn't readable");
             storedDrawables = null;
+        } else {
+            File[] imageFiles = getFilesFromDirectory(WelcomeScreen.IMAGES_PATH, ".jpg", ".png");
+
+            if (imageFiles.length > 0) {
+                String descriptionsFolder = "Descriptions";
+                Locale locale = getActivity().getResources().getConfiguration().locale;
+                if (locale.getDisplayLanguage().equals(Locale.ENGLISH.getDisplayLanguage()))
+                    descriptionsFolder = descriptionsFolder.concat("_en");
+                else
+                    descriptionsFolder = descriptionsFolder.concat("_pl");
+                File[] descFiles = getFilesFromDirectory(WelcomeScreen.DESCRIPTIONS_PATH, ".txt");
+
+                //getDrawables
+                storedDrawables = getDrawables(imageFiles, descFiles);
+            } else {
+                Log.e(LOG, "No files found in external storage");
+                storedDrawables = null;
+            }
+
         }
 
         pairs = new int[numberOfCards];
@@ -389,33 +409,35 @@ public class MainActivityFragment extends Fragment {
             //Assign the front of the ImageViewCard to the randomly chosen Drawable.
             ImageView imageView1, imageView2;
             String absolutePath;
-            if (storedDrawables != null) {
+            if (storedDrawables == null) {
+                (cards[pair1].getChildAt(1)).setBackgroundColor(ContextCompat.getColor(getActivity(), colors[chosenDrawables[i]]));
+                (cards[pair2].getChildAt(1)).setBackgroundColor(ContextCompat.getColor(getActivity(), colors[chosenDrawables[i]]));
+            } else {
                 DisplayMetrics displayMetrics = new DisplayMetrics();
                 WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE); // the results will be higher than using the activity context object or the getWindowManager() shortcut
                 wm.getDefaultDisplay().getMetrics(displayMetrics);
                 int screenWidth = displayMetrics.widthPixels / (layoutsPerLevel[level]);
                 int screenHeight = displayMetrics.heightPixels / (cardsPerLevel[level] / layoutsPerLevel[level]);
 
-                absolutePath = storedDrawables[chosenDrawables[i]].absolute_path_thumbnail;
+                absolutePath = storedDrawables[chosenDrawables[i]].absolute_path_image;
                 imageView1 = ((ImageView) cards[pair1].getChildAt(1));
                 imageView2 = ((ImageView) cards[pair2].getChildAt(1));
 
                 bitmapWorkerTask = new BitmapWorkerTask(screenWidth, screenHeight, imageView1, imageView2);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                    bitmapWorkerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, absolutePath);
-                else
-                    bitmapWorkerTask.execute();
+                bitmapWorkerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, absolutePath);
 
-            } else {
 
-                (cards[pair1].getChildAt(1)).setBackgroundColor(ContextCompat.getColor(getActivity(), colors[chosenDrawables[i]]));
-                (cards[pair2].getChildAt(1)).setBackgroundColor(ContextCompat.getColor(getActivity(), colors[chosenDrawables[i]]));
             }
 
             //Save the pairs.
             pairs[pair1] = pair2;
             pairs[pair2] = pair1;
 
+        }
+
+
+        if (storedDrawables == null) {
+            numberOfBitmapWorkerTasks = 0;
         }
 
         return rootView;
@@ -509,23 +531,19 @@ public class MainActivityFragment extends Fragment {
 
     /**
      * Returns a list of the File[s] located in the specified folder.
-     *
-     * @param context   The Context (getActivity())
+     * TODO albumName is the directory path now
      * @param albumName The name of the folder to search for
      * @param filters   The extensions of the files to search for. Will return everything if no filter is specified.
      * @return A list of the File[s] located in the specified folder with the specified extensions.
      */
-    private File[] getFilesFromDirectory(Context context, String albumName, final String... filters) {
+    private File[] getFilesFromDirectory(String albumName, final String... filters) {
         // Get the directory for the app's private pictures directory.
-        File directory = new File(context.getExternalFilesDir(
-                Environment.DIRECTORY_PICTURES), albumName);
+        File directory = new File(albumName);
         if (!directory.mkdirs() && !directory.isDirectory()) {
             Log.e(LOG, "Directory not created");
         }
 
-
-        @SuppressWarnings("UnnecessaryLocalVariable")
-        File[] files = directory.listFiles(new FilenameFilter() {
+        return directory.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File file, String s) {
 
@@ -545,44 +563,39 @@ public class MainActivityFragment extends Fragment {
 
             }
         });
-        return files;
     }
 
     /**
-     * Takes the thumbnails, images, descriptions, links them together and stores them in the StoredImage storedDrawables variable.
+     * Takes the thumbnails, images, descriptions, links them together and returns them.
      * For the thumbnails and images, only the absolute path is stored in order to save space. The actual images is extracted later and only the number that is required.
      * If there are no thumbnails, storedDrawables will be null.
      *
-     * @param thumbnails   A File Array with thumbnails of the images.
      * @param images       A File Array with with the images for viewing in fullscreen.
      * @param descriptions A File Array with the descriptions for every image.
+     * @return The thumbnails, images, descriptions, linked together.
      */
-    private void getDrawables(File[] thumbnails, File[] images, File[] descriptions) {
+    private StoredImage[] getDrawables(File[] images, File[] descriptions) {
+        StoredImage[] tempDrawables;
 
-        //Create a HashMap with the name of the file and the absolute path of the thumbnail.
-        HashMap<String, String> storedThumbnails = new HashMap<>();
-        for (File thumbnail : thumbnails) {
-            storedThumbnails.put(removeExtensionFromFilename(thumbnail.getName()), thumbnail.getAbsolutePath());
+        //Create a HashMap with the name of the file and the absolute path of the image.
+        HashMap<String, String> imagesPaths = new HashMap<>();
+        String imageName;
+        for (File image : images) {
+            imageName = removeExtensionFromFilename(image.getName());
+            imagesPaths.put(imageName, image.getAbsolutePath());
         }
-        //Log.v(LOG, storedThumbnails.size() + " vs " + cardsPerLevel[level]);
 
         //If there aren't enough images to fill up all the available cards, return null.
         //This will results in the cards displaying the default colors.
-        if (2 * storedThumbnails.size() < cardsPerLevel[level]) {
-            storedDrawables = null;
-            return;
-        }
-
-        //Create a HashMap with the name of the file and the absolute path of the image.
-        HashMap<String, String> storedImages = new HashMap<>();
-        for (File image : images) {
-            storedImages.put(removeExtensionFromFilename(image.getName()), image.getAbsolutePath());
+        if (2 * imagesPaths.size() < cardsPerLevel[level]) {
+            return null;
         }
 
         //Create a HashMap with the name of the file and the absolute path of the description.
         HashMap<String, String> storedDescriptions = new HashMap<>();
         StringBuilder desc;
         if (descriptions != null) {
+            String descName;
             for (File description : descriptions) {
                 desc = new StringBuilder();
                 try {
@@ -598,36 +611,31 @@ public class MainActivityFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-
-                storedDescriptions.put(removeExtensionFromFilename(description.getName()), desc.toString());
+                descName = removeExtensionFromFilename(description.getName());
+                storedDescriptions.put(descName, desc.toString());
             }
         }
 
-        storedDrawables = new StoredImage[storedThumbnails.size()];
+        tempDrawables = new StoredImage[imagesPaths.size()];
 
         int i = 0;
-        String path1, path2, description;
-        //For every different thumbnail, search for the respective image and description and store it in a StoredImage.
-        //If there is no image, the thumbnail will be used instead.
+        String imagePath, descPath;
+        //For every different image, search for the respective description and store it in a StoredImage.
         //If there is no description, the description will be empty.
-        for (String name : storedThumbnails.keySet()) {
+        for (String name : imagesPaths.keySet()) {
 
-            path1 = storedThumbnails.get(name);
-
-            if (storedImages.containsKey(name))
-                path2 = storedImages.get(name);
-            else
-                path2 = storedThumbnails.get(name);
+            imagePath = imagesPaths.get(name);
 
             if (storedDescriptions.containsKey(name))
-                description = storedDescriptions.get(name);
+                descPath = storedDescriptions.get(name);
             else
-                description = null;
+                descPath = null;
 
-            storedDrawables[i] = new StoredImage(name, path1, path2, description);
+            tempDrawables[i] = new StoredImage(name, imagePath, descPath);
             i++;
         }
 
+        return tempDrawables;
     }
 
     /**
@@ -652,13 +660,11 @@ public class MainActivityFragment extends Fragment {
     public class StoredImage {
 
         public final String name;
-        public final String absolute_path_thumbnail;
         public final String absolute_path_image;
         public final String description;
 
-        public StoredImage(String name, String absolute_path_thumbnail, String absolute_path_image, String description) {
+        public StoredImage(String name, String absolute_path_image, String description) {
             this.name = name;
-            this.absolute_path_thumbnail = absolute_path_thumbnail;
             this.absolute_path_image = absolute_path_image;
             this.description = description;
         }

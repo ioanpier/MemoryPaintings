@@ -9,4 +9,17 @@
     <string name="dismiss">Odwołać</string>
     <string name="instructions">Instrukcje</string><string name="instructions_message">Każdy obraz ma identyczną parę. Musisz go znaleźć!
 Na koniec rundy, można kliknąć obrazek by zobaczyć go w pełnym ekranie, a także kilka dodatkowych informacji na ten temat.</string>
+    <string name="amsterdam">missing</string>
+    <string name="circle_rainbow">missing</string>
+    <string name="copenhagen_nyhavn">missing</string>
+    <string name="reindeers">missing</string>
+    <string name="rolling_stones">missing</string>
+    <string name="stockholm_lake">missing</string>
+    <string name="stockholm_sunbathed">missing</string>
+    <string name="sukawiakun">missing</string>
+    <string name="triple_me">missing</string>
+    <string name="vasteras_incoming">missing</string>
+    <string name="vasteras_hill">missing</string>
+    <string name="vasteras_red_houses">missing</string>
+    <string name="vasteras_river">missing</string>
 </resources>
